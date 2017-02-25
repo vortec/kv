@@ -5,13 +5,13 @@ defmodule KVServer do
     {:ok, socket} = :gen_tcp.listen(port,
                       [:binary, packet: :line, active: false, reuseaddr: true])
 
-    Logger.info "Accepting connection on port #{port}"
+    Logger.info "Accepting connections on port #{port}"
     loop_acceptor(socket)
   end
 
   defp loop_acceptor(socket) do
     {:ok, client} = :gen_tcp.accept(socket)
-    serve(client)
+    spawn fn -> serve(client) end
     loop_acceptor(socket)
   end
 
